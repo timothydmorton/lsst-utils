@@ -38,7 +38,7 @@ class PipelineStage(object):
                 else:
                     fmt = '{0}={{0[{0}]}} '.format(key)
                     s += fmt.format(self.pipeline)
-            except KeyError:
+            except (KeyError, AttributeError):
                 continue
 
         if filt is not None:
