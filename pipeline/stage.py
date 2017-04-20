@@ -32,11 +32,14 @@ class PipelineStage(object):
     def id_str(self, filt=None):
         s = ''
         for key in self._id_options:
-            try:
-                fmt = '{0}={{0[{0}]}} '.format(key)
-                s += fmt.format(self.pipeline)
-            except KeyError:
-                continue
+            if key=='visit':
+                s += 'visit={0} '.format(self.pipeline.visit[filt])
+            else:
+                try:
+                    fmt = '{0}={{0[{0}]}} '.format(key)
+                    s += fmt.format(self.pipeline)
+                except KeyError:
+                    continue
 
         if filt is not None:
             s += '--filter={0} '.format(filt)
