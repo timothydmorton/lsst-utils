@@ -33,7 +33,7 @@ class PipelineStage(object):
         s = ''
         for key in self._id_options:
             try:
-                fmt = '{0}=\{0[{0}]\} '.format(key)
+                fmt = '{0}={{0[{0}]}} '.format(key)
                 s += fmt.format(self.pipeline)
             except KeyError:
                 continue
