@@ -15,7 +15,6 @@ class PipelineStage(object):
     batch_compatible = True
     single_filter = False
     batch_type = 'slurm'
-    
 
     _default_kwargs = {}
 
@@ -23,11 +22,24 @@ class PipelineStage(object):
         self.pipeline = pipeline
 
     @property
+    def _id_options(self):
+        raise NotImplementedError("Need to define what id keys are valid.")
+
+    @property
     def default_kwargs(self):
         return self._default_kwargs
 
     def id_str(self, filt=None):
-        s = self.id_str_fmt.format(self.pipeline)
+        s = ''
+        for key in self._id_options:
+            try:
+                fmt = '{0}=\{0[{0}]\} '.format(key)
+                s += fmt.format(self.pipeline)
+            except KeyError:
+                continue
+
+        if filt is not None:
+            s += '--filter={0} '.format(filt)
         return s
 
     def jobname(self, filt=None):
@@ -193,7 +205,6 @@ class ManualBatchStage(PipelineStage):
             'time':time,
             'nodes':1,
             'ntasks-per-node':self.pipeline['cores_per_node'],
-            'mem':48000
         }
         batch_options = dict(batch_options, **self._override_batch_options)
         batch_options = dict(batch_options, **kwargs)
@@ -210,24 +221,21 @@ class ManualBatchStage(PipelineStage):
         return cmd
     
 class BatchStage(PipelineStage):
-    _default_kwargs = {'mpiexec':'-bind-to socket',
-                       'batch-type':'slurm'}
-      
-class SingleFilterStage(PipelineStage):
-    single_filter = True
 
-    def id_str(self, filt=None, visits=True):
-        if filt is None:
-            raise ValueError('Must provide filter for {}.'.format(self.name))
-        s = super(SingleFilterStage, self).id_str()
-        s += 'filter={0} '.format(filt)
-        if visits:
-            s += 'visit={0} '.format(self.pipeline['visit'][filt])
-        return s
+    @property
+    def _default_kwargs(self):
+        kws = {'mpiexec':'-bind-to socket',
+               'batch-type':self.batch_type}
 
-class SingleFrameDriverStage(SingleFilterStage, BatchStage):
+        kws['batch-output'] = self.pipeline.output_dir
+        return kws
+
+
+class SingleFrameDriverStage(BatchStage):
     name = 'singleFrameDriver'
     id_str_fmt = 'ccd={0[ccd]} '
+    single_filter = True
+    self._id_options = ('ccd', 'visit')
 
 class MakeDiscreteSkyMapStage(ManualBatchStage):
     name = 'makeDiscreteSkyMap'
@@ -257,19 +265,17 @@ class MakeDiscreteSkyMapStage(ManualBatchStage):
         cmd = 'mkdir -p {0}; ln -sf {1.skymap} {0} '.format(target_dir, self)
         return cmd
 
-class MosaicStage(SingleFilterStage, ManualBatchStage):
+class MosaicStage(ManualBatchStage):
     name = 'mosaic'
-    id_str_fmt = 'tract={0[tract]} ccd={0[ccd]} '
+    _id_options = ('tract', 'patch', 'ccd')
     depends = ('singleFrameDriver', 'makeDiscreteSkyMap')
+    single_filter = True
 
-class CoaddDriverStage(SingleFilterStage, BatchStage):
+class CoaddDriverStage(BatchStage):
     name = 'coaddDriver'
-    id_str_fmt = 'tract={0[tract]} '
-    depends = ('singleFrameDriver', 'makeDiscreteSkyMap', 'mosaic')
-
-    def id_str(self, filt=None):
-        s = super(CoaddDriverStage, self).id_str(filt, visits=False)
-        return s
+    _id_options = ('tract', 'patch')
+    depends = ('mosaic')
+    single_filter = True
 
     def selectId_str(self, filt=None):
         s = 'ccd={0[ccd]} '.format(self.pipeline)
@@ -279,10 +285,9 @@ class CoaddDriverStage(SingleFilterStage, BatchStage):
 
 class MultiBandDriverStage(BatchStage):
     name = 'multiBandDriver'
-    depends = ('singleFrameDriver', 'makeDiscreteSkyMap', 'mosaic', 'coaddDriver')
+    depends = ('coaddDriver')
+    _id_options = ('tract', 'patch')
 
     def id_str(self, filt=None):
-        s = 'tract={0[tract]} '.format(self.pipeline)
         all_filters = '^'.join(self.pipeline.filters)
-        s += 'filter={0} '.format(all_filters)
-        return s
+        return super(MultiBandDriverStage, self).id_str(filt=all_filters)
