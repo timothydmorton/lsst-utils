@@ -34,7 +34,7 @@ class PipelineStage(object):
         for key in self._id_options:
             try:
                 if key=='visit':
-                    s += 'visit={0}'.format(self.pipeline['visit'][filt])
+                    s += 'visit={0} '.format(self.pipeline['visit'][filt])
                 else:
                     fmt = '{0}={{0[{0}]}} '.format(key)
                     s += fmt.format(self.pipeline)
