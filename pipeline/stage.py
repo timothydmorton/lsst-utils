@@ -235,7 +235,7 @@ class SingleFrameDriverStage(BatchStage):
     name = 'singleFrameDriver'
     id_str_fmt = 'ccd={0[ccd]} '
     single_filter = True
-    self._id_options = ('ccd', 'visit')
+    _id_options = ('ccd', 'visit')
 
 class MakeDiscreteSkyMapStage(ManualBatchStage):
     name = 'makeDiscreteSkyMap'
