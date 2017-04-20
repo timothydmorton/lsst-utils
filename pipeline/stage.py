@@ -42,7 +42,7 @@ class PipelineStage(object):
                 continue
 
         if filt is not None:
-            s += '--filter={0} '.format(filt)
+            s += 'filter={0} '.format(filt)
         return s
 
     def jobname(self, filt=None):
