@@ -3,7 +3,7 @@ import os, sys
 
 
 def readme():
-    with open('README.md') as f:
+    with open('readme.md') as f:
         return f.read()
 
 setup(name = "pipeline",
