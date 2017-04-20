@@ -193,7 +193,7 @@ class ManualBatchStage(PipelineStage):
             'time':time,
             'nodes':1,
             'ntasks-per-node':self.pipeline['cores_per_node'],
-            'mem':48000
+            #'mem':48000
         }
         batch_options = dict(batch_options, **self._override_batch_options)
         batch_options = dict(batch_options, **kwargs)
