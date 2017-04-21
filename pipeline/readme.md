@@ -9,6 +9,7 @@ git clone https://github.com/timothydmorton/lsst-utils
 cd lsst-utils/pipeline
 python setup.py install --user
 ```
+Yes, I understand that 'pipeline' is a horrible name for a python package; I'm open to better suggestions.  
 
 ## Usage
 
