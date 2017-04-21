@@ -12,6 +12,12 @@ def write_slurm_script(filename, cmd, **batch_options):
         fout.write('{0}\n'.format(cmd))
 
 def get_job_status(jobid, wait=10):
+    """Returns status of slurm job <jobid>
+
+    Currently parses output of `sacct`.  Perhaps would
+    be a good idea to move this to pyslurm (though this would 
+    add a dependency.)
+    """
     m = False
     repeat = 0
     while not m and repeat < wait:    
