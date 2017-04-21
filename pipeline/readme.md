@@ -9,6 +9,7 @@ git clone https://github.com/timothydmorton/lsst-utils
 cd lsst-utils/pipeline
 python setup.py install --user
 ```
+Yes, I understand that 'pipeline' is a horrible name for a python package; I'm open to better suggestions.  
 
 ## Usage
 
@@ -23,7 +24,7 @@ data_root: /datasets/hsc/repo
 user: tmorton
 ticket: DM-10043
 field: cosmos
-rerun: private/tmorton/DM-10043/cosmos
+# rerun: private/tmorton/custom-rerun-name
 
 batch_type: slurm
 cores_per_node: 48 # VC
@@ -51,7 +52,7 @@ tract: 0
 pipeline:
     - singleFrameDriver
     - makeDiscreteSkyMap
-    - mosaic
+    # - mosaic  # let's say we're skipping the mosaic step.
     - coaddDriver
     - multiBandDriver
 
@@ -68,8 +69,10 @@ kwargs:
         diagDir: /home/tmorton/mosaicDiag/cosmos
     coaddDriver:
         time: 100
-        nodes: 4
-        config: "assembleCoadd.doApplyUberCal=False makeCoaddTempExp.doApplyUberCal=False"
+        nodes: 1 # Don't use multiple nodes 
+        config: # enter config option as a nested dictionary, like this.
+            assembleCoadd.doApplyUberCal: False     # because of skipping mosaic.py
+            makeCoaddTempExp.doApplyUberCal: False  # because of skipping mosaic.py       
     multiBandDriver:
         time: 4000
         nodes: 24
