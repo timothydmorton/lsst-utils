@@ -157,7 +157,7 @@ class PipelineStage(object):
                     print('jobid {0} completed. '.format(jid))
                     completed.append(jid)
                     self.pipeline.complete_job_ids.append(jid)
-                elif status in ('FAILED', 'CANCELLED'):
+                elif status in ('FAILED', 'CANCELLED', 'TIMEOUT'):
                     time.sleep(5)
                     status = get_job_status(jid)
                     if status in ('FAILED', 'CANCELLED'):

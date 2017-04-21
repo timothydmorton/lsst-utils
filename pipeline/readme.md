@@ -69,7 +69,7 @@ kwargs:
         diagDir: /home/tmorton/mosaicDiag/cosmos
     coaddDriver:
         time: 100
-        nodes: 4
+        nodes: 1 # Don't use multiple nodes 
         config: # enter config option as a nested dictionary, like this.
             assembleCoadd.doApplyUberCal: False     # because of skipping mosaic.py
             makeCoaddTempExp.doApplyUberCal: False  # because of skipping mosaic.py       
