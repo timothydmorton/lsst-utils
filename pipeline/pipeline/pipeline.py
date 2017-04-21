@@ -6,6 +6,7 @@ import numpy as np
 import subprocess
 import time
 import multiprocessing
+import socket
 
 from .stage import SingleFrameDriverStage, MakeDiscreteSkyMapStage, MosaicStage
 from .stage import CoaddDriverStage, MultiBandDriverStage
@@ -33,7 +34,10 @@ class Pipeline(object):
         if 'rerun' in self._dict:
             return self['rerun']
         else:
-            return '{0[user]}/{0[ticket]}/{0[field]}'.format(self)
+            dirname = '{0[user]}/{0[ticket]}/{0[field]}'.format(self)
+            if re.search('lsst-dev', socket.gethostname()):
+                dirname = os.path.join('private', dirname)
+            return dirname
 
     @property
     def rerun_dir(self):
