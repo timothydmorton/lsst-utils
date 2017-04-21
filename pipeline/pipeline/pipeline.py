@@ -95,7 +95,7 @@ class FilterWorker(object):
         self.test = test
         
     def __call__(self, filt):
-        time.sleep(np.random.random()*3 + 2)
+        time.sleep(np.random.random()*2)
         jobid = self.stage.submit_job(filt, test=self.test)
         print('{0} launched for {1} (jobid={2})'.format(self.stage.name, filt, jobid))
         return jobid
