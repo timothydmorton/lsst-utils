@@ -71,6 +71,7 @@ class PipelineStage(object):
                 # val should be a dict
                 for k, v in val.items():
                     cmd += '--config {0}={1} '.format(k,v)
+                continue
 
             if val is False:
                 continue
