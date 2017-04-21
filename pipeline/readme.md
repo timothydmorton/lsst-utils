@@ -69,7 +69,7 @@ kwargs:
     coaddDriver:
         time: 100
         nodes: 4
-        config:
+        config: # enter config option as a nested dictionary, like this.
             assembleCoadd.doApplyUberCal: False     # because of skipping mosaic.py
             makeCoaddTempExp.doApplyUberCal: False  # because of skipping mosaic.py       
     multiBandDriver:
