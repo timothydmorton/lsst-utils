@@ -67,6 +67,11 @@ class PipelineStage(object):
         kws.update(self.pipeline['kwargs'][self.name])
         kws.update(kwargs)
         for kw, val in kws.items():
+            if kw == 'config':
+                # val should be a dict
+                for k, v in val.items():
+                    cmd += '--config {0}={1} '.format(k,v)
+
             if val is False:
                 continue
 
