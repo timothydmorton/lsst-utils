@@ -24,7 +24,7 @@ data_root: /datasets/hsc/repo
 user: tmorton
 ticket: DM-10043
 field: cosmos
-rerun: private/tmorton/DM-10043/cosmos
+# rerun: private/tmorton/custom-rerun-name
 
 batch_type: slurm
 cores_per_node: 48 # VC
