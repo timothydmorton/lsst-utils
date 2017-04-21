@@ -83,9 +83,7 @@ Then run
 ```
 runPipeline.py cosmos.yaml
 ```
-and hopefully it will run all the correct commands, respecting all the necessary dependenices.  
-Please let me know if it doesn't, and what other functionality you might find useful.
-If you want to see what commands will be run, you can run
+and hopefully it will run all the correct commands, respecting all the necessary dependenices.  Please let me know if it doesn't, and what other functionality you might find useful. If you want to see what commands will be run, you can run
 ```
 runPipeline.py cosmos.yaml --test
 ```
