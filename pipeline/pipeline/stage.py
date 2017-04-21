@@ -242,7 +242,7 @@ class SingleFrameDriverStage(BatchStage):
 
 class MakeDiscreteSkyMapStage(ManualBatchStage):
     name = 'makeDiscreteSkyMap'
-    depends = ('singleFrameDriver', )
+    # depends = ('singleFrameDriver', )
     _override_batch_options = {'ntasks-per-node':1}
 
     @property
@@ -277,7 +277,7 @@ class MosaicStage(ManualBatchStage):
 class CoaddDriverStage(BatchStage):
     name = 'coaddDriver'
     _id_options = ('tract', 'patch')
-    depends = ('mosaic')
+    depends = ('singleFrameDriver', 'mosaic')
     single_filter = True
 
     def selectId_str(self, filt=None):
