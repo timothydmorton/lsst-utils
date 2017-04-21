@@ -51,7 +51,7 @@ tract: 0
 pipeline:
     - singleFrameDriver
     - makeDiscreteSkyMap
-    - mosaic
+    # - mosaic  # let's say we're skipping the mosaic step.
     - coaddDriver
     - multiBandDriver
 
@@ -69,6 +69,9 @@ kwargs:
     coaddDriver:
         time: 100
         nodes: 4
+        config:
+            assembleCoadd.doApplyUberCal: False     # because of skipping mosaic.py
+            makeCoaddTempExp.doApplyUberCal: False  # because of skipping mosaic.py       
     multiBandDriver:
         time: 4000
         nodes: 24
