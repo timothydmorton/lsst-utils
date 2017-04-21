@@ -1,10 +1,15 @@
 import sys
+import argparse
 
 from pipeline import Pipeline
 
-test = '--test' in sys.argv
+parser = argparse.ArgumentParser('Run a pipeline')
+parser.add_argument('configfile', help='yaml file')
+parser.add_argument('--test', action='store_true')
+parser.add_argument('--parallel', action='store_true')
 
-configfile = sys.argv[1]
+args = parser.parse_args()
 
-pipe = Pipeline(configfile)
-pipe.run(test=test)
+pipe = Pipeline(args.configfile)
+pipe.run(test=args.test, parallel=args.parallel)
+
