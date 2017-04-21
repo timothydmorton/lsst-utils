@@ -8,6 +8,7 @@ setup_local meas_base
 setup_local meas_astrom
 setup_local meas_mosaic
 setup_local obs_subaru
+setup_local pipe_base
 
 # lauren_branch="u/lauren/py11anet"
 # setup_local pipe_analysis $lauren_branch
