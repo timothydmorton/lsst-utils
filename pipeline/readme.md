@@ -69,7 +69,6 @@ kwargs:
     coaddDriver:
         time: 100
         nodes: 4
-        config: "assembleCoadd.doApplyUberCal=False makeCoaddTempExp.doApplyUberCal=False"
     multiBandDriver:
         time: 4000
         nodes: 24
