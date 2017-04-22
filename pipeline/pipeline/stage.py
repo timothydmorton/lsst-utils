@@ -283,7 +283,6 @@ class MosaicStage(ManualBatchStage):
     depends = ('singleFrameDriver', 'makeDiscreteSkyMap')
     single_filter = True
 
-    @property
     def diagDir(self, filt):
         return os.path.join(os.expanduser('~'), 'mosaicDiag', 
                             self.jobname(), filt)
