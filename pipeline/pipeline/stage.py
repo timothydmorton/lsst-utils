@@ -289,8 +289,12 @@ class MosaicStage(ManualBatchStage):
 
     def cmd_str(self, filt=None, test=False):
         cmd = super(MosaicStage, self).cmd_str(filt=filt, test=test)
-        if re.search('--diagnostics', cmd):
-            cmd += '--diagDir {0} '.format(self.diagDir(filt))
+        try:
+            if self.pipeline['kwargs']['mosaic']['diagnostics']:
+                cmd += '--diagDir {0} '.format(self.diagDir(filt))
+        except KeyError:
+            pass
+            
         return cmd
 
 class CoaddDriverStage(BatchStage):
