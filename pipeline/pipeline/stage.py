@@ -283,6 +283,17 @@ class MosaicStage(ManualBatchStage):
     depends = ('singleFrameDriver', 'makeDiscreteSkyMap')
     single_filter = True
 
+    @property
+    def diagDir(self, filt):
+        return os.path.join(os.expanduser('~'), 'mosaicDiag', 
+                            self.jobname(), filt)
+
+    def cmd_str(self, filt=None, test=False):
+        cmd = super(MosaicStage, self).cmd_str(filt=filt, test=test)
+        if re.search('--diagnostics', cmd):
+            cmd += '--diagDir {0} '.format(self.diagDir(filt))
+        return cmd
+
 class CoaddDriverStage(BatchStage):
     name = 'coaddDriver'
     _id_options = ('tract', 'patch')
