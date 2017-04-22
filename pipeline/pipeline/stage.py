@@ -285,16 +285,14 @@ class MosaicStage(ManualBatchStage):
 
     def diagDir(self, filt):
         return os.path.join(os.path.expanduser('~'), 'mosaicDiag', 
-                            self.jobname(), filt)
+                            self.pipeline.rerun, filt)
 
     def cmd_str(self, filt=None, test=False):
         cmd = super(MosaicStage, self).cmd_str(filt=filt, test=test)
         try:
             if self.pipeline['kwargs']['mosaic']['diagnostics']:
                 cmd += '--diagDir {0} '.format(self.diagDir(filt))
-            print('HELLO')
         except KeyError:
-            print('BOO!', self.pipeline['kwargs']['mosaic'])
             pass
 
         return cmd
