@@ -284,7 +284,7 @@ class MosaicStage(ManualBatchStage):
     single_filter = True
 
     def diagDir(self, filt):
-        return os.path.join(os.expanduser('~'), 'mosaicDiag', 
+        return os.path.join(os.path.expanduser('~'), 'mosaicDiag', 
                             self.jobname(), filt)
 
     def cmd_str(self, filt=None, test=False):
