@@ -160,7 +160,7 @@ class PipelineStage(object):
                 elif status in ('FAILED', 'CANCELLED', 'TIMEOUT'):
                     time.sleep(5)
                     status = get_job_status(jid)
-                    if status in ('FAILED', 'CANCELLED'):
+                    if status in ('FAILED', 'CANCELLED', 'TIMEOUT'):
                         raise RuntimeError('Unexpected status: Job {0} is {1}.'.format(jid, status))
                     else:
                         continue
