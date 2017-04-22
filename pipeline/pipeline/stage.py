@@ -67,6 +67,9 @@ class PipelineStage(object):
         kws.update(self.pipeline['kwargs'][self.name])
         kws.update(kwargs)
         for kw, val in kws.items():
+            if kw == 'filters':
+                continue
+
             if kw == 'config':
                 # val should be a dict
                 for k, v in val.items():
