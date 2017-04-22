@@ -72,17 +72,21 @@ class Pipeline(object):
         self.complete_job_ids = []
         for stage in self.stages:
             if stage.single_filter:
+                try:
+                    filters = self['kwargs']['filters']
+                except KeyError:
+                    filters = self.filters
                 if parallel:
-                    pool = multiprocessing.Pool(len(self.filters))
+                    pool = multiprocessing.Pool(len(filters))
                     worker = FilterWorker(stage, test=test)
-                    jobids = pool.map(worker, self.filters)
-                    keys = ['{0}-{1}'.format(stage.name, f) for f in self.filters]
+                    jobids = pool.map(worker, filters)
+                    keys = ['{0}-{1}'.format(stage.name, f) for f in filters]
                     for k, j in zip(keys, jobids):
                         self.job_ids[k] = j            
                     pool.close()
                     pool.join()
                 else:
-                    for filt in self.filters:
+                    for filt in filters:
                         jobid = stage.submit_job(filt, test=test)
                         key = '{0}-{1}'.format(stage.name, filt)
                         self.job_ids[key] = jobid
