@@ -14,12 +14,12 @@ from .stage import SingleFrameDriverStage, MakeDiscreteSkyMapStage, MosaicStage
 from .stage import CoaddDriverStage, MultiBandDriverStage
 
 def read_field_config(field):
-    filename = resource_filename(os.path.join('pipeline','fields',
+    filename = resource_filename('pipelind', os.path.join('fields',
                                               '{}.yaml'.format(field)))
     with open(filename) as fin:
         d = yaml.load(fin)
 
-    skymap_file = resource_filename(os.path.join('pipeline','fields',
+    skymap_file = resource_filename('pipeline', os.path.join('pipeline','fields',
                                               '{}.skymap'.format(field)))
     if os.path.exists(skymap_file):
         d['skymap'] = skymap_file
