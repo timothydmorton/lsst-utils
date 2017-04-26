@@ -46,7 +46,8 @@ class PipelineStage(object):
         return s
 
     def jobname(self, filt=None):
-        s = '{0[ticket]}-{0[field]}-{1}'.format(self.pipeline, self.name)
+        job = self.pipeline.rerun.replace('/','-')
+        s = '{0}-{1}'.format(job, self.name)
         if filt is not None:
             s += '-{}'.format(filt)
         return s
