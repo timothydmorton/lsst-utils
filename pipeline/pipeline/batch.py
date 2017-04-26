@@ -11,7 +11,7 @@ def write_slurm_script(filename, cmd, **batch_options):
         fout.write('\n')
         fout.write('{0}\n'.format(cmd))
 
-def get_job_status(jobid, wait=10):
+def get_job_status(jobid, wait=30):
     """Returns status of slurm job <jobid>
 
     Currently parses output of `sacct`.  Perhaps would
