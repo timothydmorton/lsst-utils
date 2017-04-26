@@ -48,14 +48,26 @@ class Pipeline(object):
         return self['visit'].keys()
 
     @property
+    def user(self):
+        if user in self._dict:
+            return self._dict['user']
+        else:
+            return os.getenv('USER')
+
+    @property
+    def rerun_base(self):
+        dirname = self.user
+        if re.search('lsst-dev', socket.gethostname()):
+            dirname = os.path.join('private', dirname)
+        return dirname
+
+    @property
     def rerun(self):
         if 'rerun' in self._dict:
-            return self['rerun']
+            dirname = '{0.rerun_base}/{0[rerun]}'.format(self)
         else:
-            dirname = '{0[user]}/{0[ticket]}/{0[field]}'.format(self)
-            if re.search('lsst-dev', socket.gethostname()):
-                dirname = os.path.join('private', dirname)
-            return dirname
+            dirname = '{0.rerun_base}/{0[ticket]}/{0[field]}'.format(self)
+        return dirname
 
     @property
     def rerun_dir(self):
