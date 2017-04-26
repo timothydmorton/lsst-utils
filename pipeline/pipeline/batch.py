@@ -18,16 +18,24 @@ def get_job_status(jobid, wait=30):
     be a good idea to move this to pyslurm (though this would 
     add a dependency.)
     """
-    m = False
-    repeat = 0
-    while not m and repeat < wait:    
-        cmd = 'sacct -b -j {0}'.format(jobid)
-        output = subprocess.check_output(cmd, shell=True)
-        m = re.search('{0}\s+([A-Z]+)'.format(jobid), output)
-        time.sleep(1)
-        repeat += 1 
+    cmd = 'scontrol show job {0}'.format(jobid)
+    output = subprocess.check_output(cmd, shell=True)
+    m = re.search('JobState=(\w+)', output)
+    status = None
+    if m:
+        status = m.group(1)
+    else:
+        repeat = 0
+        while not m and repeat < wait:    
+            cmd = 'sacct -b -j {0}'.format(jobid)
+            output = subprocess.check_output(cmd, shell=True)
+            m = re.search('{0}\s+([A-Z]+)'.format(jobid), output)
+            time.sleep(1)
+            repeat += 1 
+        if m:
+            status = m.group(1)   
 
-    if not m:
+    if status is None:
         raise ValueError('Job not found: {0}'.format(jobid))
-    return m.group(1)
-
+    else:
+        return status         
