@@ -49,7 +49,7 @@ class Pipeline(object):
 
     @property
     def user(self):
-        if user in self._dict:
+        if 'user' in self._dict:
             return self._dict['user']
         else:
             return os.getenv('USER')
