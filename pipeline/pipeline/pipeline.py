@@ -62,12 +62,15 @@ class Pipeline(object):
         return dirname
 
     @property
-    def rerun(self):
+    def rerun_unique(self):
         if 'rerun' in self._dict:
-            dirname = '{0.rerun_base}/{0[rerun]}'.format(self)
+            return self['rerun']
         else:
-            dirname = '{0.rerun_base}/{0[ticket]}/{0[field]}'.format(self)
-        return dirname
+            return '{0[ticket]}/{0[field]}'.format(self)
+
+    @property
+    def rerun(self):
+        return '{0.rerun_base}/{0.rerun_unique}'.format(self)
 
     @property
     def rerun_dir(self):
