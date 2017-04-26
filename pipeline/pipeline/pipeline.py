@@ -14,7 +14,7 @@ from .stage import SingleFrameDriverStage, MakeDiscreteSkyMapStage, MosaicStage
 from .stage import CoaddDriverStage, MultiBandDriverStage
 
 def read_field_config(field):
-    filename = resource_filename('pipelind', os.path.join('fields',
+    filename = resource_filename('pipeline', os.path.join('fields',
                                               '{}.yaml'.format(field)))
     with open(filename) as fin:
         d = yaml.load(fin)
