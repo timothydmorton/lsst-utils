@@ -8,8 +8,23 @@ import time
 import multiprocessing
 import socket
 
+from pkg_resources import resource_filename
+
 from .stage import SingleFrameDriverStage, MakeDiscreteSkyMapStage, MosaicStage
 from .stage import CoaddDriverStage, MultiBandDriverStage
+
+def read_field_config(field):
+    filename = resource_filename(os.path.join('pipeline','fields',
+                                              '{}.yaml'.format(field)))
+    with open(filename) as fin:
+        d = yaml.load(fin)
+
+    skymap_file = resource_filename(os.path.join('pipeline','fields',
+                                              '{}.skymap'.format(field)))
+    if os.path.exists(skymap_file):
+        d['skymap'] = skymap_file
+
+    return d
 
 class Pipeline(object):
     def __init__(self, filename):
@@ -21,6 +36,9 @@ class Pipeline(object):
     def _read_yaml(self):
         with open(self.filename) as fin:
             self._dict = yaml.load(fin)
+
+        if 'field' in self._dict:
+            self._dict.update(read_field_config(self._dict['field']))
 
     def __getitem__(self, item):
         return self._dict[item]

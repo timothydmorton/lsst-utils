@@ -6,3 +6,5 @@ visit:
   HSC-Z: 9708^9712^9716^9724^9726^9730^9732^9736^9740^9750^9752^9764^9772^9774^17738^17740^17750^17752^17754
 
 tract: 8766^8767
+
+skymap: /home/tmorton/rc-tests/skymaps/wide/skyMap.pickle

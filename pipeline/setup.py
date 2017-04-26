@@ -15,6 +15,7 @@ setup(name = "pipeline",
     url = "https://github.com/timothydmorton/lsst-utils/pipeline",
     packages = find_packages(),
     scripts = ['scripts/runPipeline.py'],
+    package_data = {'pipeline': ['fields/*']},
     classifiers=[
       'Development Status :: 3 - Alpha',
       'Intended Audience :: Science/Research',
