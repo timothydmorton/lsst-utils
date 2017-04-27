@@ -43,6 +43,17 @@ class KwargDict(dict):
 
         return cmd
 
+    def update(self, other):
+        """Just like normal update, but treat 'config' specially.
+        """
+        other = other.copy()
+        if 'config' in self and 'config' in other:
+            self['config'].update(other['config'])
+            other['config'] = self['config']
+
+        self.update(other)
+
+
 class PipelineStage(object):
     name = None
     id_str_fmt = None
@@ -140,7 +151,7 @@ class PipelineStage(object):
         if hasattr(self, 'selectId_str'):
             cmd += '--selectId {0} '.format(self.selectId_str(filt))
 
-        cmd += self.kwarg_str(**kwargs)
+        cmd += self.kwarg_str(filt=filt, **kwargs)
 
         if test:
             cmd = cmd.replace('"', "'")
