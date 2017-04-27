@@ -9,6 +9,40 @@ import multiprocessing
 
 from .batch import write_slurm_script, get_job_status
 
+class KwargDict(dict):
+
+    def cmd_str(self, skip=['filters']):
+        if skip is None:
+            skip = []
+        cmd = ''
+        for kw, val in kws.items():
+            if kw in skip:
+                continue
+
+            if kw == 'config':
+                # val should be a dict
+                for k, v in val.items():
+                    cmd += '--config {0}={1} '.format(k,v)
+                continue
+
+            # If false than this is a flag/switch argument; don't turn it on.
+            if val is False:
+                continue
+
+            cmd += '--{0}'.format(kw)
+            if val != '' and val is not True:
+                # ensure quotation marks where necessary
+                if isinstance(val, basestring):
+                    val = '"{0}"'.format(val)
+
+                cmd += '={0} '.format(val)
+                if kw == 'nodes':
+                    cmd += '--procs {0[cores_per_node]} '.format(self.pipeline)
+            else:
+                cmd += ' '
+
+        return cmd
+
 class PipelineStage(object):
     name = None
     id_str_fmt = None
@@ -17,6 +51,7 @@ class PipelineStage(object):
     batch_type = 'slurm'
 
     _default_kwargs = {}
+    _kwarg_skip = ()
 
     def __init__(self, pipeline):
         self.pipeline = pipeline
@@ -45,6 +80,48 @@ class PipelineStage(object):
             s += 'filter={0} '.format(filt)
         return s
 
+    def kwarg_str(self, filt=None, **kwargs):
+        """Returns a string of arguments 
+
+        example YAML:
+
+            kwargs:
+                singleFrameDriver:
+                    time: 1200 # sec
+                    cores: 240
+                makeDiscreteSkyMap:
+                    time: 300
+                mosaic:
+                    time: 4800
+                    numCoresForRead: 24
+                    diagnostics: True
+                    #loglevel: debug
+                coaddDriver:
+                    time: 900 #more than necessary, but hopefully enough for Y-band
+                    cores: 20
+                    HSC-Y:
+                        config:
+                            assembleCoadd.subregionSize: "10000,50"
+                multiBandDriver:
+                    time: 18000
+                    cores: 864
+                all:
+                    clobber-config: False
+
+        This returns a `CmdLineTask`-compatible keyword string for this task, 
+        to be added to the id string to make the whole command line call string.
+        """
+
+        kws = KwargDict(self.default_kwargs)
+        kws.update(self.pipeline['kwargs']['all'])
+        kws.update(self.pipeline['kwargs'][self.name])
+        if filt in self.pipeline['kwargs'][self.name]:
+            kws.update(self.pipeline['kwargs'][self.name][filt])
+        kws.update(kwargs)
+
+        skip = self._kwarg_skip + tuple(self.pipeline.filters)
+        return kws.cmd_str(skip=skip)
+
     def jobname(self, filt=None):
         job = self.pipeline.rerun.replace('/','-')
         s = '{0}-{1}'.format(job, self.name)
@@ -63,38 +140,7 @@ class PipelineStage(object):
         if hasattr(self, 'selectId_str'):
             cmd += '--selectId {0} '.format(self.selectId_str(filt))
 
-        kws = dict(self.default_kwargs)
-        kws.update(self.pipeline['kwargs']['all'])
-        kws.update(self.pipeline['kwargs'][self.name])
-        kws.update(kwargs)
-        for kw, val in kws.items():
-            if kw == 'filters':
-                continue
-
-            if kw == 'config':
-                # val should be a dict
-                for k, v in val.items():
-                    cmd += '--config {0}={1} '.format(k,v)
-                continue
-
-            if val is False:
-                continue
-
-            # skip using "time" keyword if writing batch script manually
-            if isinstance(self, ManualBatchStage) and kw == 'time':
-                continue
-
-            cmd += '--{0}'.format(kw)
-            if val != '' and val is not True:
-                # ensure quotation marks where necessary
-                if isinstance(val, basestring):
-                    val = '"{0}"'.format(val)
-
-                cmd += '={0} '.format(val)
-                if kw == 'nodes':
-                    cmd += '--procs {0[cores_per_node]} '.format(self.pipeline)
-            else:
-                cmd += ' '
+        cmd += self.kwarg_str(**kwargs)
 
         if test:
             cmd = cmd.replace('"', "'")
@@ -196,6 +242,7 @@ class PipelineStage(object):
 class ManualBatchStage(PipelineStage):
     _default_time = 1200
     _override_batch_options = {}
+    _kwarg_skip = ('time,')
 
     def write_batch_script(self, filt=None, test=False, **kwargs):
         jobname = self.jobname(filt)
