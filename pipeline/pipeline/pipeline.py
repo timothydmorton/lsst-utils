@@ -98,9 +98,16 @@ class Pipeline(object):
                 commands.append(stage.cmd_str())
         return commands
 
-    def run(self, test=False, parallel=True):
+    def run(self, test=False, parallel=True, clobber=True):
         # Should launch in parallel with Nfilters processes? 
             
+        if os.path.exists(self.output_dir):
+            if clobber:
+                os.rmtree(self.output_dir)
+        os.makedirs(self.output_dir)
+
+        shutil.copy(self.filename, self.output_dir)
+
         self.job_ids = {}
         self.complete_job_ids = []
         for stage in self.stages:
