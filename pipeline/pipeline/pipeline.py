@@ -1,6 +1,6 @@
 import yaml
 import tempfile
-import os, re
+import os, re, shutil
 import logging
 import numpy as np
 import subprocess
@@ -122,7 +122,7 @@ class Pipeline(object):
         if not test:
             if os.path.exists(self.output_dir):
                 if clobber:
-                    os.rmtree(self.output_dir)
+                    shutil.rmtree(self.output_dir)
             os.makedirs(self.output_dir)
 
             shutil.copy(self.filename, self.output_dir)
