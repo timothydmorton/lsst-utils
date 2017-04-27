@@ -41,6 +41,10 @@ class Pipeline(object):
             self._dict.update(read_field_config(self._dict['field']))
 
     def __getitem__(self, item):
+        for s in self.stages:
+            if s.name==item:
+                return s
+                
         return self._dict[item]
 
     @property
