@@ -10,6 +10,8 @@ import socket
 
 from pkg_resources import resource_filename
 
+from lsst.daf.persistence import Butler
+
 from .stage import SingleFrameDriverStage, MakeDiscreteSkyMapStage, MosaicStage
 from .stage import CoaddDriverStage, MultiBandDriverStage
 
@@ -32,6 +34,8 @@ class Pipeline(object):
         self._read_yaml()
         self.job_ids = {}
         self.complete_job_ids = []
+
+        self._butler = None
 
     def _read_yaml(self):
         with open(self.filename) as fin:
@@ -81,6 +85,16 @@ class Pipeline(object):
         return '{0[data_root]}/rerun/{0.rerun}'.format(self)
 
     @property
+    def butler(self):
+        if self._butler is None:
+            self._butler = Butler(self.rerun_dir)
+        return self._butler
+
+    @property
+    def skymap(self):
+        return self.butler.get('deepCoadd_skyMap')
+
+    @property
     def output_dir(self):
         m = re.search('(.*)\.ya?ml', self.filename)
         return '{0}_output'.format(m.group(1))
@@ -105,12 +119,13 @@ class Pipeline(object):
     def run(self, test=False, parallel=True, clobber=True):
         # Should launch in parallel with Nfilters processes? 
             
-        if os.path.exists(self.output_dir):
-            if clobber:
-                os.rmtree(self.output_dir)
-        os.makedirs(self.output_dir)
+        if not test:
+            if os.path.exists(self.output_dir):
+                if clobber:
+                    os.rmtree(self.output_dir)
+            os.makedirs(self.output_dir)
 
-        shutil.copy(self.filename, self.output_dir)
+            shutil.copy(self.filename, self.output_dir)
 
         self.job_ids = {}
         self.complete_job_ids = []
