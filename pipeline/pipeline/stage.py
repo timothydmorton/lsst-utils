@@ -15,7 +15,7 @@ class KwargDict(dict):
         if skip is None:
             skip = []
         cmd = ''
-        for kw, val in kws.items():
+        for kw, val in self.items():
             if kw in skip:
                 continue
 
