@@ -117,8 +117,10 @@ class Pipeline(object):
         return commands
 
     def run(self, test=False, parallel=True, clobber=True):
-        # Should launch in parallel with Nfilters processes? 
-            
+
+        
+        # Should test to make sure Stage executables are found.
+
         if not test:
             if os.path.exists(self.output_dir):
                 if clobber:
