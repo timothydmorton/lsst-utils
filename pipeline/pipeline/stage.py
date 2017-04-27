@@ -242,7 +242,7 @@ class PipelineStage(object):
 class ManualBatchStage(PipelineStage):
     _default_time = 1200
     _override_batch_options = {}
-    _kwarg_skip = ('time,')
+    _kwarg_skip = ('time',)
 
     def write_batch_script(self, filt=None, test=False, **kwargs):
         jobname = self.jobname(filt)
