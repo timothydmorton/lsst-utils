@@ -51,7 +51,7 @@ class KwargDict(dict):
             self['config'].update(other['config'])
             other['config'] = self['config']
 
-        self.update(other)
+        super(KwargDict, self).update(other)
 
 
 class PipelineStage(object):
