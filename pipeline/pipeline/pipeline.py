@@ -44,7 +44,7 @@ class Pipeline(object):
         for s in self.stages:
             if s.name==item:
                 return s
-                
+
         return self._dict[item]
 
     @property
@@ -87,7 +87,7 @@ class Pipeline(object):
     
     @property
     def stages(self):
-        stages = [eval('{}Stage(self)'.format(s[0].upper()+s[1:])) for s in self['pipeline']]
+        stages = [eval('{}Stage(self)'.format(s[0].upper()+s[1:])) for s in self._dict['pipeline']]
         return stages
     
     @property
