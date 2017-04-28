@@ -238,16 +238,16 @@ class PipelineStage(object):
         cmd += ' --show data | grep dataId'
 
         lines = subprocess.check_output(cmd, shell=True).splitlines()
-        id_list = {}
+        dataRefs = {}
         for line in lines:
             m = re.search('\{(.*)\}', line)
             # d = eval(m.group(1))
             # if type(d) is not dict:
             #     raise RuntimeError('{0} is not a dictionary?'.format(m.group(1)))
-            id_list.append(m.group(1))
+            dataRefs[filt] = m.group(1)
 
 
-        self.dataRefs[filt] = id_list
+        self.dataRefs = dataRefs
 
 
     def submit_job(self, filt=None, test=False):
