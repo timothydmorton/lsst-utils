@@ -238,6 +238,7 @@ class PipelineStage(object):
         cmd += ' --show data | grep dataId'
 
         lines = subprocess.check_output(cmd, shell=True).splitlines()
+        print('{0} dataIds found.'.format(len(lines)))
         dataRefs = {}
         dataRefs[filt] = []
         for line in lines:
@@ -249,6 +250,7 @@ class PipelineStage(object):
 
 
         self.dataRefs = dataRefs
+        return dataRefs
 
 
     def submit_job(self, filt=None, test=False):
