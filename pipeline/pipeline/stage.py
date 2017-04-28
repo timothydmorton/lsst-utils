@@ -233,7 +233,7 @@ class PipelineStage(object):
                 id_depends.remove(jid)
             time.sleep(2)
 
-    def get_datarefs(self, filt=None):
+    def getDataRefs(self, filt=None):
         cmd = self.cmd_str(filt)
         cmd += ' --show data | grep dataId'
 
@@ -247,7 +247,7 @@ class PipelineStage(object):
             id_list.append(m.group(1))
 
 
-        self.id_list[filt] = id_list
+        self.dataRefs[filt] = id_list
 
 
     def submit_job(self, filt=None, test=False):
