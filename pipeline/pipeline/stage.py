@@ -66,7 +66,7 @@ class PipelineStage(object):
 
     def __init__(self, pipeline):
         self.pipeline = pipeline
-        self._dataRefs = None
+        self._dataIds = None
 
     @property
     def _id_options(self):
@@ -234,34 +234,26 @@ class PipelineStage(object):
                 id_depends.remove(jid)
             time.sleep(2)
 
-    def _getDataRefs(self, filt=None):
+    def _getDataIds(self, filt=None):
         cmd = self.cmd_str(filt)
         cmd += ' --show data | grep dataId'
 
         lines = subprocess.check_output(cmd, shell=True).splitlines()
-        if self._dataRefs is None:
-            self._dataRefs = {}
-
-        self._dataRefs[filt] = []
-        for line in lines:
-            m = re.search('\{(.*)\}', line)
-            # d = eval(m.group(1))
-            # if type(d) is not dict:
-            #     raise RuntimeError('{0} is not a dictionary?'.format(m.group(1)))
-            self._dataRefs[filt].append(m.group(1))
+        return lines
 
     @property
-    def dataRefs(self):
-        if self._dataRefs is None:
+    def dataIds(self):
+        if self._dataIds is None:
             if self.single_filter:
                 filters = self.pipeline.filters
                 pool = multiprocessing.Pool(len(filters))
-                for filt in self.pipeline.filters:
-                    self._getDataRefs(filt)
+                worker = dataIdWorker(self)
+                ids = pool.map(worker, filters)
+                self._dataIds = {f:i for f,i in zip(filters, ids)}
             else:
-                self._getDataRefs()
+                self._dataIds = {None: self.getDataIds()}
 
-        return self._dataRefs
+        return self._dataIds
 
     def submit_job(self, filt=None, test=False):
         """Submits job; returns jobid
@@ -278,6 +270,13 @@ class PipelineStage(object):
             raise RuntimeError('Cannot find job id.')
         jobid = int(m.group(1))
         return jobid
+
+class dataIdWorker(object):
+    def __init__(self, stage):
+        self.stage = stage
+
+    def __call__(self, filt):
+        return self.stage._getDataIds(filt)
 
 
 class ManualBatchStage(PipelineStage):
