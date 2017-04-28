@@ -66,6 +66,7 @@ class PipelineStage(object):
 
     def __init__(self, pipeline):
         self.pipeline = pipeline
+        self._dataRefs = None
 
     @property
     def _id_options(self):
@@ -233,23 +234,34 @@ class PipelineStage(object):
                 id_depends.remove(jid)
             time.sleep(2)
 
-    def getDataRefs(self, filt=None):
+    def _getDataRefs(self, filt=None):
         cmd = self.cmd_str(filt)
         cmd += ' --show data | grep dataId'
 
         lines = subprocess.check_output(cmd, shell=True).splitlines()
-        dataRefs = {}
-        dataRefs[filt] = []
+        if self._dataRefs is None:
+            self._dataRefs = {}
+
+        self._dataRefs[filt] = []
         for line in lines:
             m = re.search('\{(.*)\}', line)
             # d = eval(m.group(1))
             # if type(d) is not dict:
             #     raise RuntimeError('{0} is not a dictionary?'.format(m.group(1)))
-            dataRefs[filt].append(m.group(1))
+            self._dataRefs[filt].append(m.group(1))
 
+    @property
+    def dataRefs(self):
+        if self._dataRefs is None:
+            if self.single_filter:
+                filters = self.pipeline.filters
+                pool = multiprocessing.Pool(len(filters))
+                for filt in self.pipeline.filters:
+                    self._getDataRefs(filt)
+            else:
+                self._getDataRefs()
 
-        self.dataRefs = dataRefs
-
+        return self._dataRefs
 
     def submit_job(self, filt=None, test=False):
         """Submits job; returns jobid
