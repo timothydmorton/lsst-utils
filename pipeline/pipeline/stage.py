@@ -233,20 +233,21 @@ class PipelineStage(object):
                 id_depends.remove(jid)
             time.sleep(2)
 
-    def get_data(self, filt=None):
+    def get_datarefs(self, filt=None):
         cmd = self.cmd_str(filt)
         cmd += ' --show data | grep dataId'
 
         lines = subprocess.check_output(cmd, shell=True).splitlines()
-        id_list = []
+        id_list = {}
         for line in lines:
             m = re.search('\{(.*)\}', line)
-            d = eval(m.group(1))
-            if type(d) is not dict:
-                raise RuntimeError('{0} is not a dictionary?'.format(m.group(1)))
-            id_list.append(eval(m.group(1)))
+            # d = eval(m.group(1))
+            # if type(d) is not dict:
+            #     raise RuntimeError('{0} is not a dictionary?'.format(m.group(1)))
+            id_list.append(m.group(1))
 
-        self.id_list = id_list
+
+        self.id_list[filt] = id_list
 
 
     def submit_job(self, filt=None, test=False):
