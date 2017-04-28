@@ -239,12 +239,13 @@ class PipelineStage(object):
 
         lines = subprocess.check_output(cmd, shell=True).splitlines()
         dataRefs = {}
+        dataRefs[filt] = []
         for line in lines:
             m = re.search('\{(.*)\}', line)
             # d = eval(m.group(1))
             # if type(d) is not dict:
             #     raise RuntimeError('{0} is not a dictionary?'.format(m.group(1)))
-            dataRefs[filt] = m.group(1)
+            dataRefs[filt].append(m.group(1))
 
 
         self.dataRefs = dataRefs
