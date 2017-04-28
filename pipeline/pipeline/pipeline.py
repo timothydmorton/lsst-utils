@@ -35,6 +35,7 @@ class Pipeline(object):
         self.job_ids = {}
         self.complete_job_ids = []
 
+        self._stages = None
         self._butler = None
 
     def _read_yaml(self):
@@ -101,8 +102,9 @@ class Pipeline(object):
     
     @property
     def stages(self):
-        stages = [eval('{}Stage(self)'.format(s[0].upper()+s[1:])) for s in self._dict['pipeline']]
-        return stages
+        if self._stages is None:
+            self._stages = [eval('{}Stage(self)'.format(s[0].upper()+s[1:])) for s in self._dict['pipeline']]
+        return self._stages
     
     @property
     def commands(self):
