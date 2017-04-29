@@ -262,12 +262,12 @@ class PipelineStage(object):
         total = sum([len(self.dataIds[f]) for f in filters])
         return {f:len(self.dataIds[f])/total for f in filters}
 
-    def submit_job(self, filt=None, test=False):
+    def submit_job(self, filt=None, test=False, **kwargs):
         """Submits job; returns jobid
         """
         self._wait_for_dependencies(filt=filt, test=test)
 
-        cmd = self.submit_cmd(filt, test=test)
+        cmd = self.submit_cmd(filt, test=test, **kwargs)
         
         output = subprocess.check_output(cmd, shell=True)
         m = re.search('batch job (\d+)', output)
