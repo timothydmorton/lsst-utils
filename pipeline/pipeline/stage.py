@@ -1,3 +1,4 @@
+from __future__ import division, print_function
 import yaml
 import tempfile
 import os, re
@@ -250,10 +251,16 @@ class PipelineStage(object):
                 worker = dataIdWorker(self)
                 ids = pool.map(worker, filters)
                 self._dataIds = {f:i for f,i in zip(filters, ids)}
+                pool.close()
+                pool.join()
             else:
                 self._dataIds = {None: self.getDataIds()}
 
         return self._dataIds
+
+    def filterWeights(self, filters):
+        total = sum([len(self.dataIds[f]) for f in filters])
+        return {f:len(self.dataIds[f])/total for f in filters}
 
     def submit_job(self, filt=None, test=False):
         """Submits job; returns jobid

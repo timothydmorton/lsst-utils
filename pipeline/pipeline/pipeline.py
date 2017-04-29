@@ -119,8 +119,6 @@ class Pipeline(object):
         return commands
 
     def run(self, test=False, parallel=True, clobber=True):
-
-        
         # Should test to make sure Stage executables are found.
 
         if not test:
@@ -139,9 +137,16 @@ class Pipeline(object):
                     filters = self['kwargs']['filters']
                 except KeyError:
                     filters = self.filters
+
+                # For now, do this only for singleFrameDriver
+                if stage.name == 'singleFrameDriver':
+                    weights = stage.filterWeights(filters)
+                else:
+                    weights = None
+
                 if parallel:
                     pool = multiprocessing.Pool(len(filters))
-                    worker = FilterWorker(stage, test=test)
+                    worker = submitWorker(stage, test=test, weights=weights)
                     jobids = pool.map(worker, filters)
                     keys = ['{0}-{1}'.format(stage.name, f) for f in filters]
                     for k, j in zip(keys, jobids):
@@ -160,13 +165,21 @@ class Pipeline(object):
                 self.job_ids[key] = jobid
                 print('{0} launched (jobid={1})'.format(key, jobid))
                 
-class FilterWorker(object):
-    def __init__(self, stage, test=False):
+class submitWorker(object):
+    def __init__(self, stage, weights=None, test=False):
         self.stage = stage
         self.test = test
+        self.weights = weights
         
     def __call__(self, filt):
         time.sleep(np.random.random()*5)
-        jobid = self.stage.submit_job(filt, test=self.test)
+        kwargs = dict(test=self.test)
+        if self.weights is not None:
+            try: 
+                kwargs['cores'] = self.weights[filt] * self.stage.pipeline['total_cores']
+            except KeyError:
+                pass
+
+        jobid = self.stage.submit_job(filt, **kwargs)
         print('{0} launched for {1} (jobid={2})'.format(self.stage.name, filt, jobid))
         return jobid
