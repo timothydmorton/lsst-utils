@@ -165,10 +165,10 @@ class PipelineStage(object):
 
         return cmd
     
-    def submit_cmd(self, filt=None, test=False):
+    def submit_cmd(self, filt=None, test=False, **kwargs):
         """
         """
-        cmd = self.cmd_str(filt, test=test)
+        cmd = self.cmd_str(filt, test=test, **kwargs)
         return cmd
 
     def _get_dependent_jobids(self, filt=None):
