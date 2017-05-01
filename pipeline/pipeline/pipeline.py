@@ -86,6 +86,10 @@ class Pipeline(object):
         return '{0[data_root]}/rerun/{0.rerun}'.format(self)
 
     @property
+    def kwargs(self):
+        return self['kwargs']
+
+    @property
     def butler(self):
         if self._butler is None:
             self._butler = Butler(self.rerun_dir)
