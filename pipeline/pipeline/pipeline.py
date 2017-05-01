@@ -12,8 +12,9 @@ from pkg_resources import resource_filename
 
 from lsst.daf.persistence import Butler
 
-from .stage import SingleFrameDriverStage, MakeDiscreteSkyMapStage, MosaicStage
-from .stage import CoaddDriverStage, MultiBandDriverStage, HscCoaddAnalysisStage
+from .stage import (SingleFrameDriverStage, MakeDiscreteSkyMapStage, MosaicStage,
+                     CoaddDriverStage, MultiBandDriverStage, HscCoaddAnalysisStage,
+                     HscColorAnalysisStage)
 
 def read_field_config(field):
     filename = resource_filename('pipeline', os.path.join('fields',
