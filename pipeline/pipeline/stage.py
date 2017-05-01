@@ -136,8 +136,11 @@ class PipelineStage(object):
         return kws.cmd_str(skip=skip)
 
     def jobname(self, filt=None):
-        job = self.pipeline.rerun_unique.replace('/','-')
-        s = '{0}-{1}'.format(job, self.name)
+        try:
+            s = '{0}-{1}'.format(self.pipeline['job'], self.name)
+        except KeyError
+            job = self.pipeline.rerun_unique.replace('/','-')
+            s = '{0}-{1}'.format(job, self.name)
         if filt is not None:
             s += '-{}'.format(filt)
         return s
