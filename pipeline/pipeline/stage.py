@@ -420,13 +420,13 @@ class MultiBandDriverStage(BatchStage):
         all_filters = '^'.join(self.pipeline.filters)
         return super(MultiBandDriverStage, self).id_str(filt=all_filters)
 
-class HscCoaddAnalysisStage(HeadNodeStage):
+class HscCoaddAnalysisStage(ManualBatchStage):
     name = 'hscCoaddAnalysis'
     depends = ('multiBandDriver',)
     _id_options = ('tract', 'patch')
     single_filter = True
 
-class HscColorAnalysisStage(HeadNodeStage):
+class HscColorAnalysisStage(ManualBatchStage):
     name = 'hscColorAnalysis'
     depends = ('multiBandDriver',)
     _id_options = ('tract', 'patch')
