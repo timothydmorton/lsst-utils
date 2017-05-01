@@ -406,9 +406,15 @@ class CoaddDriverStage(BatchStage):
 
 class MultiBandDriverStage(BatchStage):
     name = 'multiBandDriver'
-    depends = ('coaddDriver')
+    depends = ('coaddDriver',)
     _id_options = ('tract', 'patch')
 
     def id_str(self, filt=None):
         all_filters = '^'.join(self.pipeline.filters)
         return super(MultiBandDriverStage, self).id_str(filt=all_filters)
+
+class HscCoaddAnalysisStage(ManualBatchStage):
+    name = 'hscCoaddAnalysis'
+    depends = ('multiBandDriver',)
+    _id_options = ('tract', 'patch')
+    single_filter = True
