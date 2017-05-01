@@ -309,7 +309,7 @@ class ManualBatchStage(PipelineStage):
         batch_options = {
             'job-name':jobname,
             'output':'{0}/{1}.%j.log'.format(batchdir, jobname),
-            'time':time,
+            'time':int(time),
             'nodes':1,
             'ntasks-per-node':self.pipeline['cores_per_node'],
         }
