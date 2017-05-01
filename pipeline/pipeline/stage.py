@@ -145,7 +145,7 @@ class PipelineStage(object):
     def cmd_str(self, filt=None, test=False, **kwargs):
         cmd = '{0}.py {1[data_root]} --rerun {1.rerun} '.format(self.name, self.pipeline)
 
-        if not isinstance(self, ManualBatchStage):
+        if isinstance(self, BatchStage):
             cmd += '--job {0} '.format(self.jobname(filt))
 
         cmd += '--id {0} '.format(self.id_str(filt))
