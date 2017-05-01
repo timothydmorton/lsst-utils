@@ -433,5 +433,5 @@ class HscColorAnalysisStage(HeadNodeStage):
 
     def id_str(self, filt=None):
         all_filters = '^'.join(self.pipeline.filters)
-        return super(MultiBandDriverStage, self).id_str(filt=all_filters)
-    
+        return super(HscColorAnalysisStage, self).id_str(filt=all_filters)
+
