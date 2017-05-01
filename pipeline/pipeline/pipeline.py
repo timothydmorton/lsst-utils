@@ -180,7 +180,7 @@ class submitWorker(object):
         kwargs = dict(test=self.test)
         if self.weights is not None:
             try: 
-                total_cores = self.stage.pipeline.kwargs[stage.name]['total_cores']
+                total_cores = self.stage.pipeline.kwargs[self.stage.name]['total_cores']
                 kwargs['cores'] = int(self.weights[filt] * total_cores)
             except KeyError:
                 pass
