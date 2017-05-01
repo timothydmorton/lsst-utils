@@ -279,7 +279,7 @@ class PipelineStage(object):
         cmd = self.submit_cmd(filt, test=test, **kwargs)
         
         output = subprocess.check_output(cmd, shell=True)
-        return get_jobid(output)
+        return self.get_jobid(output)
 
 class dataIdWorker(object):
     def __init__(self, stage):
