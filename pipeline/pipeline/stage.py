@@ -63,7 +63,7 @@ class PipelineStage(object):
     batch_type = 'slurm'
 
     _default_kwargs = {}
-    _kwarg_skip = ()
+    _kwarg_skip = ('total_cores',)
 
     def __init__(self, pipeline):
         self.pipeline = pipeline
