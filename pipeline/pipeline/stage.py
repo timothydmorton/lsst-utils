@@ -262,6 +262,15 @@ class PipelineStage(object):
         total = sum([len(self.dataIds[f]) for f in filters])
         return {f:len(self.dataIds[f])/total for f in filters}
 
+    def get_jobid(self, output):
+        m = re.search('batch job (\d+)', output)
+        if not m:
+            logging.error('Cannot find job id: {0}'.format(output))
+            logging.error('Command submitted: {0}'.format(cmd))
+            raise RuntimeError('Cannot find job id.')
+        jobid = int(m.group(1))
+        return jobid        
+
     def submit_job(self, filt=None, test=False, **kwargs):
         """Submits job; returns jobid
         """
@@ -270,13 +279,7 @@ class PipelineStage(object):
         cmd = self.submit_cmd(filt, test=test, **kwargs)
         
         output = subprocess.check_output(cmd, shell=True)
-        m = re.search('batch job (\d+)', output)
-        if not m:
-            logging.error('Cannot find job id: {0}'.format(output))
-            logging.error('Command submitted: {0}'.format(cmd))
-            raise RuntimeError('Cannot find job id.')
-        jobid = int(m.group(1))
-        return jobid
+        return get_jobid(output)
 
 class dataIdWorker(object):
     def __init__(self, stage):
@@ -327,6 +330,10 @@ class ManualBatchStage(PipelineStage):
         cmd = 'sbatch {0} '.format(batchfile)
         return cmd
     
+class HeadNodeStage(PipelineStage):
+    def get_jobid(self, output):
+        return -1
+
 class BatchStage(PipelineStage):
 
     @property
@@ -413,7 +420,7 @@ class MultiBandDriverStage(BatchStage):
         all_filters = '^'.join(self.pipeline.filters)
         return super(MultiBandDriverStage, self).id_str(filt=all_filters)
 
-class HscCoaddAnalysisStage(ManualBatchStage):
+class HscCoaddAnalysisStage(HeadNodeStage):
     name = 'hscCoaddAnalysis'
     depends = ('multiBandDriver',)
     _id_options = ('tract', 'patch')
