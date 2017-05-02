@@ -351,8 +351,8 @@ class BatchStage(PipelineStage):
         kws['batch-output'] = self.pipeline.output_dir
         return kws
 
-    def cmd_str(self, filt=None, test=False):
-        cmd = super(BatchStage, self).cmd_str(filt=filt, test=False)
+    def cmd_str(self, filt=None, test=False, **kwargs):
+        cmd = super(BatchStage, self).cmd_str(filt=filt, test=False, **kwargs)
         cmd += '--job {0} '.format(self.jobname(filt))
 
         if test:
