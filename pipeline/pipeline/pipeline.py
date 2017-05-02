@@ -12,7 +12,7 @@ from pkg_resources import resource_filename
 
 from lsst.daf.persistence import Butler
 
-from .stage import (SingleFrameDriverStage, MakeDiscreteSkyMapStage, MosaicStage,
+from .stage import (SingleFrameDriverStage, MakeSkyMapStage, MosaicStage,
                      CoaddDriverStage, MultiBandDriverStage, HscCoaddAnalysisStage,
                      HscColorAnalysisStage)
 
