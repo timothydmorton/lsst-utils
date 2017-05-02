@@ -138,12 +138,20 @@ class PipelineStage(object):
     def jobname(self, filt=None):
         try:
             s = '{0}-{1}'.format(self.pipeline['job'], self.name)
-        except KeyError
+        except KeyError:
             job = self.pipeline.rerun_unique.replace('/','-')
             s = '{0}-{1}'.format(job, self.name)
         if filt is not None:
             s += '-{}'.format(filt)
         return s
+
+    def _testify_cmd_str(self, cmd):
+        cmd = cmd.replace('"', "'")
+        np.random.seed()
+        jobid = np.random.randint(10000)
+        sleep = np.random.random()*2 + 2
+        cmd = 'echo "{0}\nbatch job {1}; sleep {2}"'.format(cmd, jobid, sleep)
+        return cmd        
 
     def cmd_str(self, filt=None, test=False, **kwargs):
         cmd = '{0}.py {1[data_root]} --rerun {1.rerun} '.format(self.name, self.pipeline)
@@ -158,11 +166,7 @@ class PipelineStage(object):
         cmd += self.kwarg_str(filt=filt, **kwargs)
 
         if test:
-            cmd = cmd.replace('"', "'")
-            np.random.seed()
-            jobid = np.random.randint(10000)
-            sleep = np.random.random()*2 + 2
-            cmd = 'echo "{0}\nbatch job {1}; sleep {2}"'.format(cmd, jobid, sleep)
+            cmd = self._testify_cmd_str(cmd)
             print(cmd)
 
         return cmd
@@ -347,8 +351,13 @@ class BatchStage(PipelineStage):
         return kws
 
     def cmd_str(self, filt=None, test=False):
-        cmd = super(BatchStage, self).cmd_str(filt=filt, test=test)
+        cmd = super(BatchStage, self).cmd_str(filt=filt, test=False)
         cmd += '--job {0} '.format(self.jobname(filt))
+
+        if test:
+            cmd = self._testify_cmd_str(cmd)
+            print(cmd)
+
         return cmd
 
 
