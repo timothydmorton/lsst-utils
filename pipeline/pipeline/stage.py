@@ -37,8 +37,6 @@ class KwargDict(dict):
                     val = '"{0}"'.format(val)
 
                 cmd += '={0} '.format(val)
-                if kw == 'nodes':
-                    cmd += '--procs {0[cores_per_node]} '.format(self.pipeline)
             else:
                 cmd += ' '
 
