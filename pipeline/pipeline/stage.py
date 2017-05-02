@@ -127,9 +127,10 @@ class PipelineStage(object):
 
         kws = KwargDict(self.default_kwargs)
         kws.update(self.pipeline['kwargs']['all'])
-        kws.update(self.pipeline['kwargs'][self.name])
-        if filt in self.pipeline['kwargs'][self.name]:
-            kws.update(self.pipeline['kwargs'][self.name][filt])
+        if self.name in self.pipeline['kwargs']:
+            kws.update(self.pipeline['kwargs'][self.name])
+            if filt in self.pipeline['kwargs'][self.name]:
+                kws.update(self.pipeline['kwargs'][self.name][filt])
         kws.update(kwargs)
 
         skip = self._kwarg_skip + tuple(self.pipeline.filters)
