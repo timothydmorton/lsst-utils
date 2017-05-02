@@ -148,10 +148,9 @@ class PipelineStage(object):
     def cmd_str(self, filt=None, test=False, **kwargs):
         cmd = '{0}.py {1[data_root]} --rerun {1.rerun} '.format(self.name, self.pipeline)
 
-        if isinstance(self, BatchStage):
-            cmd += '--job {0} '.format(self.jobname(filt))
-
-        cmd += '--id {0} '.format(self.id_str(filt))
+        id_str = self.id_str(filt):
+        if id_str:
+            cmd += '--id {0} '.format(id_str)
 
         if hasattr(self, 'selectId_str'):
             cmd += '--selectId {0} '.format(self.selectId_str(filt))
@@ -347,12 +346,24 @@ class BatchStage(PipelineStage):
         kws['batch-output'] = self.pipeline.output_dir
         return kws
 
+    def cmd_str(self, filt=None, test=False):
+        cmd = super(BatchStage, self).cmd_str(filt=filt, test=test)
+        cmd += '--job {0} '.format(self.jobname(filt))
+        return cmd
+
 
 class SingleFrameDriverStage(BatchStage):
     name = 'singleFrameDriver'
     id_str_fmt = 'ccd={0[ccd]} '
     single_filter = True
     _id_options = ('ccd', 'visit')
+
+class MakeSkyMapStage(ManualBatchStage):
+    name = 'makeSkyMap'
+    _override_batch_options = {'ntasks-per-node':1}
+
+    def id_str(self, filter=None):
+        return ''
 
 class MakeDiscreteSkyMapStage(ManualBatchStage):
     name = 'makeDiscreteSkyMap'
