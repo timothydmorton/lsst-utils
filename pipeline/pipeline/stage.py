@@ -156,7 +156,7 @@ class PipelineStage(object):
     def cmd_str(self, filt=None, test=False, **kwargs):
         cmd = '{0}.py {1[data_root]} --rerun {1.rerun} '.format(self.name, self.pipeline)
 
-        id_str = self.id_str(filt):
+        id_str = self.id_str(filt)
         if id_str:
             cmd += '--id {0} '.format(id_str)
 
