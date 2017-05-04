@@ -286,7 +286,7 @@ class PipelineStage(object):
         output = subprocess.check_output(cmd, shell=True)
         jobid = self.get_jobid(output)
         with open(self.pipeline.logfile, 'a') as fout:
-            fout.write('{0} {1}\n'.format(self.jobname, jobid))
+            fout.write('{0} {1}\n'.format(self.jobname(filt=filt), jobid))
         return jobid
 
 class dataIdWorker(object):
