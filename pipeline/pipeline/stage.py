@@ -284,7 +284,10 @@ class PipelineStage(object):
         cmd = self.submit_cmd(filt, test=test, **kwargs)
         
         output = subprocess.check_output(cmd, shell=True)
-        return self.get_jobid(output)
+        jobid = self.get_jobid(output)
+        with open(self.pipeline.logfile, 'a') as fout:
+            fout.write('{0} {1}\n'.format(self.jobname, jobid))
+        return jobid
 
 class dataIdWorker(object):
     def __init__(self, stage):

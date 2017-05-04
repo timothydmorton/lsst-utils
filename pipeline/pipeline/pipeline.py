@@ -4,7 +4,7 @@ import os, re, shutil
 import logging
 import numpy as np
 import subprocess
-import time
+import time, datetime
 import multiprocessing
 import socket
 
@@ -123,6 +123,10 @@ class Pipeline(object):
                 commands.append(stage.cmd_str())
         return commands
 
+    @property
+    def logfile(self):
+        return os.path.join(self.output_dir, 'pipe.log')
+
     def run(self, test=False, parallel=True, clobber=True):
         # Should test to make sure Stage executables are found.
 
@@ -133,6 +137,15 @@ class Pipeline(object):
             os.makedirs(self.output_dir)
 
             shutil.copy(self.filename, self.output_dir)
+
+        with open(self.logfile, 'a') as fout:
+            fout.write('='*10 + '\n')
+            if test:
+                fout.write('TEST\n')
+            fout.write('{0}: starting pipeline with the following configuration:\n'.format(datetime.datetime.now()))
+            with open(self.filename) as fin:
+                fout.write(fin.read())
+            fout.write('='*10 + '\n')
 
         self.job_ids = {}
         self.complete_job_ids = []
