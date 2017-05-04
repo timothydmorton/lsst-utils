@@ -134,7 +134,8 @@ class Pipeline(object):
             if os.path.exists(self.output_dir):
                 if clobber:
                     shutil.rmtree(self.output_dir)
-            os.makedirs(self.output_dir)
+            if not os.path.exists(self.output_dir):
+                os.makedirs(self.output_dir)
 
             shutil.copy(self.filename, self.output_dir)
 
