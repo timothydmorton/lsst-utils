@@ -127,7 +127,7 @@ class Pipeline(object):
     def logfile(self):
         return os.path.join(self.output_dir, 'pipe.log')
 
-    def run(self, test=False, parallel=True, clobber=True):
+    def run(self, test=False, parallel=True, clobber=False):
         # Should test to make sure Stage executables are found.
 
         if not test:
@@ -139,13 +139,13 @@ class Pipeline(object):
             shutil.copy(self.filename, self.output_dir)
 
         with open(self.logfile, 'a') as fout:
-            fout.write('='*10 + '\n')
+            fout.write('='*30 + '\n')
             if test:
                 fout.write('TEST\n')
             fout.write('{0}: starting pipeline with the following configuration:\n'.format(datetime.datetime.now()))
             with open(self.filename) as fin:
                 fout.write(fin.read())
-            fout.write('='*10 + '\n')
+            fout.write('='*30 + '\n')
 
         self.job_ids = {}
         self.complete_job_ids = []
