@@ -2,6 +2,7 @@ import os, re
 import subprocess
 import time
 import pandas as pd
+import numpy as np
 from StringIO import StringIO
 
 def write_slurm_script(filename, cmd, **batch_options):
