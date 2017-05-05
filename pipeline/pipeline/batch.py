@@ -68,6 +68,8 @@ def get_pipeline_status(name, info=('jobid','State','Elapsed','start','end','exi
 
         cmd = 'sacct -j {0} --format {1}'.format(id_str, info_str)
         o = subprocess.check_output(cmd, shell=True)
+
+        # Filter to make sure only one line per job is kept
         keep_lines = []
         for l in o.splitlines():
             x = l.split()
@@ -76,12 +78,13 @@ def get_pipeline_status(name, info=('jobid','State','Elapsed','start','end','exi
 
         o = '\n'.join(keep_lines)
 
-        template_df = pd.DataFrame(index=ids)
+        # # Dataframe to keep track of 
+        # template_df = pd.DataFrame(index=ids)
 
         df = pd.read_table(StringIO(o), header=None, names=info, delim_whitespace=True,
                             index_col=0)
 
-        df = df.join(template_df, how='outer')
+        # df = df.join(template_df, how='outer')
         df['job'] = None
         for i,j in zip(ids, jobs):
             if i not in df.index:
