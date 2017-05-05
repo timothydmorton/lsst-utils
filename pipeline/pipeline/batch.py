@@ -61,7 +61,7 @@ def get_pipeline_status(name, info=('jobid','State','Elapsed','start','end','exi
     results = []
     for run in run_lists:
         jobs, ids = zip(*[l.split() for l in run])
-
+        ids = np.array(ids).astype(int)
         id_str = ','.join(ids)
         info_str = ','.join(info)
         cmd = 'sacct -j {0} --format {1}'.format(id_str, info_str)
@@ -74,7 +74,7 @@ def get_pipeline_status(name, info=('jobid','State','Elapsed','start','end','exi
 
         o = '\n'.join(keep_lines)
 
-        template_df = pd.DataFrame(index=np.array(ids).astype(int))
+        template_df = pd.DataFrame(index=ids)
 
         df = pd.read_table(StringIO(o), header=None, names=info, delim_whitespace=True,
                             index_col=0)
