@@ -66,16 +66,23 @@ def get_pipeline_status(name, info=('jobid','State','Elapsed','start','end','exi
         info_str = ','.join(info)
         cmd = 'sacct -j {0} --format {1}'.format(id_str, info_str)
         o = subprocess.check_output(cmd, shell=True)
+        keep_lines = []
+        for l in o.splitlines():
+            l = l.split()
+            if re.match('\d+\w', l):
+                keep_lines.append(l)
 
-        template_df = pd.DataFrame(index=ids)
+        o = '\n'.join(keep_lines)
+
+        template_df = pd.DataFrame(index=np.array(ids).astype(int))
 
         df = pd.read_table(StringIO(o), skiprows=2, header=None, names=info, delim_whitespace=True,
                             index_col=0)
         # ensure string type just in case there's just one.
-        try:
-            df.index = df.index.astype('str')
-        except TypeError:
-            df.index = df.index.astype('object')
+        # try:
+        #     df.index = df.index.astype('str')
+        # except TypeError:
+        #     df.index = df.index.astype('object')
 
         df = df.join(template_df, how='outer')
         keep_indices = [i for i in df.index if re.search('^\d+$', str(i))]
@@ -83,7 +90,6 @@ def get_pipeline_status(name, info=('jobid','State','Elapsed','start','end','exi
         df['job'] = None
         for i,j in zip(ids, jobs):
             if i not in df.index:
-                print(i, df.index)
                 df.ix[i] = None
             df.ix[i, 'job'] = j
         # print(df)
