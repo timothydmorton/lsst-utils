@@ -68,8 +68,8 @@ def get_pipeline_status(name, info=('jobid','State','Elapsed','start','end','exi
         o = subprocess.check_output(cmd, shell=True)
         keep_lines = []
         for l in o.splitlines():
-            l = l.split()
-            if re.search('^\d+$', l[0]):
+            x = l.split()
+            if re.search('^\d+$', x[0]):
                 keep_lines.append(l)
 
         o = '\n'.join(keep_lines)
