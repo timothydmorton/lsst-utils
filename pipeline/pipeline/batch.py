@@ -47,6 +47,6 @@ def get_pipeline_status(name):
     with open(pipe_logfile) as fin:
         file_str = fin.read()
 
-    pattern = re.compile('='*30 + '\n' + '(20\d\d-\d\d-\d\d.*)\n' + '.*' + '='*30 + '\n' + '(.*)' + '($|=)')
+    pattern = re.compile('='*30 + '\n' + '(20\d\d-\d\d-\d\d.*)\n' + '.*' + '='*30)# + '\n' + '(.*)' + '($|=)')
     m = re.findall(pattern, file_str)
     return pattern, m
