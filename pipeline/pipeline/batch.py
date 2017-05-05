@@ -84,6 +84,9 @@ def get_pipeline_status(name, info=('jobid','State','Elapsed','start','end','exi
         for i,j in zip(ids, jobs):
             if i not in df.index:
                 df.ix[i] = None
+            elif int(i) in df.index:
+                df.ix[i] = df.ix[int(i)]
+                del df.ix[int(i)]
             df.ix[i, 'job'] = j
         # print(df)
         # template_df.ix[df.index] = df
