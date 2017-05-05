@@ -73,6 +73,9 @@ def get_pipeline_status(name, info=('jobid','State','Elapsed','start','end','exi
 
         df = df.join(template_df, how='outer')
 
+        template_df.ix[df.index] = df
+        df = template_df
+
         keep_indices = [i for i in df.index if re.search('^\d+$', str(i))]
 
         df = df.ix[keep_indices]
