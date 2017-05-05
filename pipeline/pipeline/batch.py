@@ -61,9 +61,11 @@ def get_pipeline_status(name, info=('jobid','State','Elapsed','start','end','exi
     results = []
     for run in run_lists:
         jobs, ids = zip(*[l.split() for l in run])
-        ids = np.array(ids).astype(int)
         id_str = ','.join(ids)
         info_str = ','.join(info)
+
+        ids = np.array(ids).astype(int)
+
         cmd = 'sacct -j {0} --format {1}'.format(id_str, info_str)
         o = subprocess.check_output(cmd, shell=True)
         keep_lines = []
