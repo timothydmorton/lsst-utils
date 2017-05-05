@@ -72,6 +72,7 @@ def get_pipeline_status(name, info=('jobid','State','Elapsed','start','end','exi
         df = pd.read_table(StringIO(o), skiprows=2, header=None, names=info, delim_whitespace=True,
                             index_col=0)
         # ensure string type just in case there's just one.
+        print(df.index)
         df.index = df.index.astype('str')
 
         df = df.join(template_df, how='outer')
