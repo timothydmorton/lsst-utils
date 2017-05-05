@@ -80,19 +80,13 @@ def get_pipeline_status(name, info=('jobid','State','Elapsed','start','end','exi
 
         df = pd.read_table(StringIO(o), header=None, names=info, delim_whitespace=True,
                             index_col=0)
-        print(df.index)
 
         df = df.join(template_df, how='outer')
-        # keep_indices = [i for i in df.index if re.search('^\d+$', str(i))]
-        # df = df.ix[keep_indices]
         df['job'] = None
         for i,j in zip(ids, jobs):
             if i not in df.index:
                 df.ix[i] = None
             df.ix[i, 'job'] = j
-        # print(df)
-        # template_df.ix[df.index] = df
-        # df = template_df
 
         results.append(df)
 
