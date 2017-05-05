@@ -78,13 +78,10 @@ def get_pipeline_status(name, info=('jobid','State','Elapsed','start','end','exi
 
         o = '\n'.join(keep_lines)
 
-        # # Dataframe to keep track of 
-        # template_df = pd.DataFrame(index=ids)
-
         df = pd.read_table(StringIO(o), header=None, names=info, delim_whitespace=True,
                             index_col=0)
 
-        # df = df.join(template_df, how='outer')
+        # Add jobs; this will also add null rows for jobs without slurmdb entry
         df['job'] = None
         for i,j in zip(ids, jobs):
             if i not in df.index:
