@@ -66,14 +66,15 @@ def get_pipeline_status(name, info=('jobid','State','Elapsed','start','end','exi
         cmd = 'sacct -j {0} --format {1}'.format(id_str, info_str)
         o = subprocess.check_output(cmd, shell=True)
 
+        template_df = pd.DataFrame(index=jobs)
+
         df = pd.read_table(StringIO(o), skiprows=2, header=None, names=info, delim_whitespace=True,
                             index_col=0)
 
+        df = df.merge(template_df)
+
         keep_indices = [i for i in df.index if re.search('^\d+$', str(i))]
 
-        print(jobs)
-        print(ids)
-        print(df)
         df = df.ix[keep_indices]
         df['job'] = jobs
         results.append(df)
