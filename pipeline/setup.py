@@ -14,7 +14,7 @@ setup(name = "pipeline",
     author_email = "tdm@astro.princeton.edu",
     url = "https://github.com/timothydmorton/lsst-utils/pipeline",
     packages = find_packages(),
-    scripts = ['scripts/runPipeline.py'],
+    scripts = ['scripts/runPipeline.py', 'scripts/checkPipeline.py'],
     package_data = {'pipeline': ['fields/*']},
     classifiers=[
       'Development Status :: 3 - Alpha',

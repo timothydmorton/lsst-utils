@@ -143,7 +143,7 @@ class Pipeline(object):
             fout.write('='*30 + '\n')
             if test:
                 fout.write('TEST\n')
-            fout.write('{0}: starting pipeline with the following configuration:\n'.format(datetime.datetime.now()))
+            fout.write('{}\n'.format(datetime.datetime.now()))
             with open(self.filename) as fin:
                 fout.write(fin.read())
             fout.write('='*30 + '\n')
