@@ -69,7 +69,7 @@ def get_pipeline_status(name, info=('jobid','State','Elapsed','start','end','exi
         keep_lines = []
         for l in o.splitlines():
             l = l.split()
-            if re.match('\d+\w', l):
+            if re.search('^\d+$', l[0]):
                 keep_lines.append(l)
 
         o = '\n'.join(keep_lines)
