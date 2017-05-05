@@ -76,7 +76,7 @@ def get_pipeline_status(name, info=('jobid','State','Elapsed','start','end','exi
 
         template_df = pd.DataFrame(index=np.array(ids).astype(int))
 
-        df = pd.read_table(StringIO(o), skiprows=2, header=None, names=info, delim_whitespace=True,
+        df = pd.read_table(StringIO(o), header=None, names=info, delim_whitespace=True,
                             index_col=0)
         print(df.index)
 
