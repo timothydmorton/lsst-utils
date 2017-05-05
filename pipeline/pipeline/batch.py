@@ -1,6 +1,7 @@
 import os, re
 import subprocess
 import time
+import pandas as pd
 
 def write_slurm_script(filename, cmd, **batch_options):
     with open(filename, 'w') as fout:
@@ -40,7 +41,7 @@ def get_job_status(jobid, wait=30):
     else:
         return status
 
-def get_pipeline_status(name):
+def get_pipeline_status(name, info=('jobid','State','Elapsed','start','end','exitcode')):
     pipe_logfile = os.path.join('{0}_output'.format(name), 'pipe.log')
 
     # Split up by ====
@@ -53,9 +54,15 @@ def get_pipeline_status(name):
     run_lists = [mm[0].splitlines() for mm in m]
     job_list = []
     jobid_list = []
+    outputs = []
     for run in run_lists:
         jobs, ids = zip(*[l.split() for l in run])
-        job_list.append(jobs)
-        jobid_list.append(ids)
 
-    return job_list, jobid_list
+        id_str = ','.join(ids)
+        info_str = ','.join(info)
+        cmd = 'sacct -j {0} --format {1}'.format(id_str, info_str)
+        output = subprocess.check_output(cmd, shell=True)
+        outputs.append(output)
+
+
+    return output
