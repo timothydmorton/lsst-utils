@@ -66,18 +66,18 @@ def get_pipeline_status(name, info=('jobid','State','Elapsed','start','end','exi
         cmd = 'sacct -j {0} --format {1}'.format(id_str, info_str)
         o = subprocess.check_output(cmd, shell=True)
 
-        template_df = pd.DataFrame(index=ids)
+        template_df = pd.DataFrame(index=np.array(ids).astype(int))
 
         df = pd.read_table(StringIO(o), skiprows=2, header=None, names=info, delim_whitespace=True,
                             index_col=0)
         # ensure string type just in case there's just one.
-        df.index = df.index.astype(str)
+        df.index = df.index.astype(int)
 
         df = df.join(template_df, how='outer')
         keep_indices = [i for i in df.index if re.search('^\d+$', str(i))]
         df = df.ix[keep_indices]
 
-        print(template_df.index)
+        # print(template_df.index)
         template_df.ix[df.index] = df
         df = template_df
 
