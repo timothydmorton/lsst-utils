@@ -67,7 +67,7 @@ def get_pipeline_status(name, info=('jobid','State','Elapsed','start','end','exi
 
         keep_indices = [i for i in df.index if re.search('^\d+$', str(i))]
 
-        results.append(df[keep_indices])
+        results.append(df.ix[keep_indices])
 
 
     return results
