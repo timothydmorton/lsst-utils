@@ -21,8 +21,12 @@ def get_job_status(jobid, wait=30):
     add a dependency.)
     """
     cmd = 'scontrol show job {0}'.format(jobid)
-    output = subprocess.check_output(cmd, shell=True)
-    m = re.search('JobState=(\w+)', output)
+    try:
+        output = subprocess.check_output(cmd, shell=True)
+        m = re.search('JobState=(\w+)', output)
+    except subprocess.CalledProcessError:
+        m = False
+
     status = None
     if m:
         status = m.group(1)
