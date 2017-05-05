@@ -49,4 +49,13 @@ def get_pipeline_status(name):
 
     pattern = re.compile('='*30 + '\n' + '((\S+ \d+\n)+)')
     m = re.findall(pattern, file_str)
-    return m
+
+    run_lists = [mm[0].splitlines() for mm in m]
+    job_list = []
+    jobid_list = []
+    for run in run_lists:
+        jobs, ids = zip(*[l.split() for l in run])
+        job_list.append(jobs)
+        jobid_list.append(ids)
+
+    return job_list, jobid_list
