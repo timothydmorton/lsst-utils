@@ -38,4 +38,15 @@ def get_job_status(jobid, wait=30):
     if status is None:
         raise ValueError('Job not found: {0}'.format(jobid))
     else:
-        return status         
+        return status
+
+def get_pipeline_status(name):
+    pipe_logfile = os.path.join('{0}_output'.format(name), 'pipe.log')
+
+    # Split up by ====
+    with open(pipe_logfile) as fin:
+        file_str = fin.read()
+
+    pattern = '='*30 + '\n' + '(20\d\d-\d\d-\d\d.*)\n' + '.*' + '='*30 + '\n' + '(.*)' + '$|='
+    m = re.findall(pattern, file_str)
+    return m
