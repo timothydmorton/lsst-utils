@@ -2,6 +2,7 @@ import os, re
 import subprocess
 import time
 import pandas as pd
+from StringIO import StringIO
 
 def write_slurm_script(filename, cmd, **batch_options):
     with open(filename, 'w') as fout:
@@ -52,17 +53,20 @@ def get_pipeline_status(name, info=('jobid','State','Elapsed','start','end','exi
     m = re.findall(pattern, file_str)
 
     run_lists = [mm[0].splitlines() for mm in m]
-    job_list = []
-    jobid_list = []
-    outputs = []
+    results = []
     for run in run_lists:
         jobs, ids = zip(*[l.split() for l in run])
 
         id_str = ','.join(ids)
         info_str = ','.join(info)
         cmd = 'sacct -j {0} --format {1}'.format(id_str, info_str)
-        output = subprocess.check_output(cmd, shell=True)
-        outputs.append(output)
+        o = subprocess.check_output(cmd, shell=True)
+
+        df = pd.read_table(StringIO(o), skiprows=2, header=None, names=info, delim_whitespace=True)
+
+        keep_indices = [i for i in df.index if re.search('^\d+$', str(i))]
+
+        results.append(df[keep_indices])
 
 
-    return output
+    return results
