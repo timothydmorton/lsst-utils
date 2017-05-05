@@ -72,7 +72,10 @@ def get_pipeline_status(name, info=('jobid','State','Elapsed','start','end','exi
         df = pd.read_table(StringIO(o), skiprows=2, header=None, names=info, delim_whitespace=True,
                             index_col=0)
         # ensure string type just in case there's just one.
-        df.index = df.index.astype('str')
+        try:
+            df.index = df.index.astype('str')
+        except TypeError:
+            df.index = df.index.astype('object')
 
         df = df.join(template_df, how='outer')
         keep_indices = [i for i in df.index if re.search('^\d+$', str(i))]
