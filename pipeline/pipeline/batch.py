@@ -90,7 +90,7 @@ def get_pipeline_status(name, info=('jobid','State','Elapsed','start','end','exi
 
         # Reorder columns to make job name first
         new_cols = list(['job'] + df.columns[:-1])
-        df = df[new_cols]
+        df = df[:, new_cols]
         results.append(df)
 
 
