@@ -4,7 +4,7 @@ import time
 import pandas as pd
 import numpy as np
 from StringIO import StringIO
-import pbd
+import pdb
 
 def write_slurm_script(filename, cmd, **batch_options):
     with open(filename, 'w') as fout:
