@@ -70,10 +70,6 @@ def get_pipeline_status(name, info=('jobid','State','Elapsed','start','end','exi
         cmd = 'sacct -j {0} --format {1}'.format(id_str, info_str)
         o = subprocess.check_output(cmd, shell=True)
 
-        if not o:
-            logging.warning('No slurm jobs matching {}'.format(id_str))
-            continue
-
         # Filter to make sure only one line per job is kept
         keep_lines = []
         for l in o.splitlines():
@@ -82,6 +78,9 @@ def get_pipeline_status(name, info=('jobid','State','Elapsed','start','end','exi
                 keep_lines.append(l)
 
         o = '\n'.join(keep_lines)
+        if not o:
+            logging.warning('No slurm jobs matching {}'.format(id_str))
+            continue
 
         df = pd.read_table(StringIO(o), header=None, names=info, delim_whitespace=True,
                             index_col=0)
