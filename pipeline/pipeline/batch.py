@@ -4,6 +4,7 @@ import time
 import pandas as pd
 import numpy as np
 from StringIO import StringIO
+import pbd
 
 def write_slurm_script(filename, cmd, **batch_options):
     with open(filename, 'w') as fout:
@@ -85,7 +86,10 @@ def get_pipeline_status(name, info=('jobid','State','Elapsed','start','end','exi
         df['job'] = None
         for i,j in zip(ids, jobs):
             if i not in df.index:
-                df.ix[i] = None
+                try:
+                    df.ix[i] = None
+                except:
+                    pdb.set_trace()
             df.ix[i, 'job'] = j
 
         # Reorder columns to make job name first
