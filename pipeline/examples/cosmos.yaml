@@ -1,0 +1,50 @@
+# The root directory of data repo
+data_root: /datasets/hsc/repo 
+
+# rerun will be [private/]$user/$ticket/$field unless explicitly specified 
+#  (private/ will be added if on lsst-dev)
+user: tmorton
+rerun: /my/rerun/cosmos 
+
+field: RC_cosmos
+    
+cores_per_node: 48 # VC
+
+# CCD's to use
+ccd: 0..103
+
+pipeline:
+    #- makeSkyMap
+    #- singleFrameDriver
+    #- mosaic
+    #- coaddDriver
+    - multiBandDriver
+    - hscCoaddAnalysis
+    - hscColorAnalysis
+
+kwargs:
+    singleFrameDriver:
+        time: 1200 # sec
+        cores: 144
+        total_cores: 1152
+    makeSkyMap:
+        time: 300
+    mosaic:
+        time: 4800 
+        numCoresForRead: 24
+        diagnostics: True
+    coaddDriver: 
+        time: 9000 #more than necessary, but hopefully enough for Y-band
+        nodes: 1
+        procs: 24
+        HSC-Y:
+            config: 
+                assembleCoadd.subregionSize: "10000,50"
+        clobber-config: True
+    multiBandDriver:
+        time: 360000
+        cores: 480 
+        clobber-config: True
+    all:
+        clobber-config: False
+        clobber-versions: False
