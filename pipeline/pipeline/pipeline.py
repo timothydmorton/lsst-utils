@@ -139,7 +139,8 @@ class Pipeline(object):
 
             shutil.copy(self.filename, self.output_dir)
 
-        with open(self.logfile, 'a') as fout:
+        mode = 'w' if not os.path.exists(self.logfile) else 'a'
+        with open(self.logfile, mode) as fout:
             fout.write('='*30 + '\n')
             if test:
                 fout.write('TEST\n')
