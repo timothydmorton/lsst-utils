@@ -9,7 +9,6 @@ source $LSST_STACK_DIR/loadLSST.bash
 setup lsst_distrib
 
 function goto_repo {
-
 	repo_dir=$LSST_REPO_DIR/$1
 	
 	# Clone the repo if it is not already cloned locally
@@ -31,7 +30,8 @@ function goto_repo {
 }
 
 function setup_local {
-	goto_repo $1 $2
+	cwd=`pwd`
+    goto_repo $1 $2
 
 	if [ $3 == "rebase" ]; then
 		git rebase master
@@ -40,4 +40,5 @@ function setup_local {
 	setup -v -r . -j
 	#git clean -dfx
 	scons opt=3 -j4
+    cd $cwd
 }
