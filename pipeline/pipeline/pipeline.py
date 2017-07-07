@@ -134,13 +134,13 @@ class Pipeline(object):
             if os.path.exists(self.output_dir):
                 if clobber:
                     shutil.rmtree(self.output_dir)
-            if not os.path.exists(self.output_dir):
-                os.makedirs(self.output_dir)
+
+        if not os.path.exists(self.output_dir):
+            os.makedirs(self.output_dir)
 
             shutil.copy(self.filename, self.output_dir)
 
-        mode = 'w' if not os.path.exists(self.logfile) else 'a'
-        with open(self.logfile, mode) as fout:
+        with open(self.logfile, 'a') as fout:
             fout.write('='*30 + '\n')
             if test:
                 fout.write('TEST\n')
