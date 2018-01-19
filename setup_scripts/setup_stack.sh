@@ -5,6 +5,15 @@ if [ "$HOST" == "tiger-sumire" ]; then
 	module load rh/devtoolset/3
 fi
 
+if [ $1 == "py3" ]; then
+    export LSST_STACK_DIR=/ssd/lsstsw/stack3
+elif [ $1 == "cluster" ]; then
+    export LSST_STACK_DIR=/software/lsstsw/stack
+else
+    export LSST_STACK_DIR=/ssd/lsstsw/stack
+fi
+
+
 source $LSST_STACK_DIR/loadLSST.bash
 setup lsst_distrib
 
@@ -39,6 +48,6 @@ function setup_local {
 	
 	setup -v -r . -j
 	#git clean -dfx
-	scons opt=3 -j4
+	scons opt=3 -j8 
     cd $cwd
 }
