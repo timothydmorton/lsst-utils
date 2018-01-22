@@ -1,15 +1,15 @@
 
 # Make sure you set up the right stack.
 HOST=`hostname`
-if [[ "$HOST" == "tiger-sumire.princeton.edu" || ("$HOST" == "tigressdata.princeton.edu") ]]; then
+if [[ "$HOST" == tiger* || ("$HOST" == tigressdata*) ]]; then
 	module load rh/devtoolset/6
 fi
 
-if [[ "$HOST" == "tiger-sumire.princeton.edu" || ("$HOST" == "tigressdata.princeton.edu") ]]; then
+if [[ "$HOST" == tiger* || ("$HOST" == tigressdata*) ]]; then
     export LSST_STACK_DIR=/tigress/HSC/LSST/stack3_tiger_20171219
-elif [ $1 == "py3" ]; then
+elif [[ $1 == "py3" ]]; then
     export LSST_STACK_DIR=/ssd/lsstsw/stack3
-elif [ $1 == "cluster" ]; then
+elif [[ $1 == "cluster" ]]; then
     export LSST_STACK_DIR=/software/lsstsw/stack
 else
     export LSST_STACK_DIR=/ssd/lsstsw/stack
