@@ -471,7 +471,7 @@ class MatchVisitsStage(ManualBatchStage):
     single_filter = True
 
 
-class colorAnalysisStage(ManualBatchStage):
+class ColorAnalysisStage(ManualBatchStage):
     name = "colorAnalysis"
     depends = ("multiBandDriver",)
     _id_options = ("tract", "patch")
