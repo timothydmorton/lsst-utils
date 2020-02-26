@@ -463,16 +463,16 @@ class VisitAnalysisStage(ManualBatchStage):
     _id_options = ("visit",)
     single_filter = True
 
-    def cmd_str(self, filt=None, test=False):
-        cmd = super().cmd_str(filt=filt, test=test)
-        cmd += "--tract {}".format(self.tract)
-        return cmd
+    # def cmd_str(self, filt=None, test=False):
+    #     cmd = super().cmd_str(filt=filt, test=test)
+    #     cmd += "--tract {}".format(self.tract)
+    #     return cmd
 
 
 class MatchVisitsStage(ManualBatchStage):
     name = "matchVisits"
     depends = ("coaddAnalysis", "visitAnalysis")
-    _id_options = "tract"
+    _id_options = ("tract",)
     single_filter = True
 
 
