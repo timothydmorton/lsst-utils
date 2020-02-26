@@ -460,8 +460,13 @@ class CoaddAnalysisStage(ManualBatchStage):
 class VisitAnalysisStage(ManualBatchStage):
     name = "visitAnalysis"
     depends = ("multiBandDriver",)
-    _id_options = ("tract", "patch")
+    _id_options = ("visit",)
     single_filter = True
+
+    def cmd_str(self, filt=None, test=False):
+        cmd = super().cmd_str(filt=filt, test=test)
+        cmd += "--tract {}".format(self.tract)
+        return cmd
 
 
 class MatchVisitsStage(ManualBatchStage):
