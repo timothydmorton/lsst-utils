@@ -91,7 +91,10 @@ class Pipeline(object):
 
     @property
     def rerun(self):
-        return "{0.rerun_base}/{0.rerun_unique}".format(self)
+        if "rerun" in self._dict:
+            return self["rerun"]
+        else:
+            return "{0.rerun_base}/{0.rerun_unique}".format(self)
 
     @property
     def rerun_dir(self):
