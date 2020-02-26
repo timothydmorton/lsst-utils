@@ -119,7 +119,9 @@ class Pipeline(object):
     @property
     def stages(self):
         if self._stages is None:
-            self._stages = [eval("{}Stage".format(s[0].upper() + s[1:])) for s in self._dict["pipeline"]]
+            self._stages = [
+                eval("{}Stage(self)".format(s[0].upper() + s[1:])) for s in self._dict["pipeline"]
+            ]
         return self._stages
 
     @property
