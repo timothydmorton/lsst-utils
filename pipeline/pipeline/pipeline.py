@@ -120,7 +120,7 @@ class Pipeline(object):
     def stages(self):
         if self._stages is None:
             stage_types = [eval("{}Stage".format(s[0].upper() + s[1:])) for s in self._dict["pipeline"]]
-            self._stages = [t(self) for s in stage_types]
+            self._stages = [t(self) for t in stage_types]
         return self._stages
 
     @property
