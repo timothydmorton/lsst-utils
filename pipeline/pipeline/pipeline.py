@@ -200,6 +200,10 @@ class Pipeline(object):
                 self.job_ids[key] = jobid
                 print("{0} launched (jobid={1})".format(key, jobid))
 
+    def write_script(self, filename):
+        with open(filename, "w") as fout:
+            fout.writelines(self.commands)
+
 
 class submitWorker(object):
     def __init__(self, stage, weights=None, test=False):
